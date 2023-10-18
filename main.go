@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Mini-ProjectGO/config"
+	"Warehouse_barang/config"
 	"fmt"
 
 	"github.com/labstack/echo/v4"
