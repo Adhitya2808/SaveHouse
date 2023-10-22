@@ -13,15 +13,13 @@ import (
 )
 
 func GetUsersController(c echo.Context) error {
-    users := models.User{}
-	c.Bind(&users)
+    var users []models.User
     if err := config.DB.Find(&users).Error; err != nil {
         return echo.NewHTTPError(http.StatusBadRequest, err.Error())
     }
-	userResponse := models.UserResponse{}
     return c.JSON(http.StatusOK, map[string]interface{}{
         "message": "success get all users",
-        "users":   userResponse,
+        "users":   users,
     })
 }
 
@@ -46,10 +44,9 @@ func CreateUserController(c echo.Context) error {
     if err := config.DB.Create(&user).Error; err != nil {
         return echo.NewHTTPError(http.StatusBadRequest, err.Error())
     }
-	userResponse := models.UserResponse{}
     return c.JSON(http.StatusOK, map[string]interface{}{
         "message": "success create new user",
-        "user":    userResponse,
+        "user":    user,
     })
 }
 
