@@ -1,16 +1,27 @@
 package models
 
-import ("time")
+import "gorm.io/gorm"
 
-type Barang struct {
-	ID          int    `gorm:"primaryKey;type:smallint" json:"id" form:"id"`
-	Id_Product   int   `gorm:"smallint;not null" json:"id_product" form:"id_product"`
-	Nama_Barang string `gorm:"varchar(225);not null" json:"nama_barang" form:"nama_barang"`
-	Kategori    string `gorm:"varchar(225);not null" json:"kategori" form:"kategori"`
-	Description string `gorm:"type:text;not null" json:"deskripsi" form:"deksripsi"`
-	Photo       string `json:"photo" form:"photo"`
-	Qty         int32  `gorm:"smallint;not null" json:"qty" form:"qty"`
-	Exp_date    time.Time 
-	Transaction_INS  []BarangIN `gorm:"foreignKey:Id_Product;references:ID"`
-	Transaction_OUTS []BarangOUT `gorm:"foreignKey:Id_Product;references:ID"`
+type Barang struct{
+	gorm.Model
+	ID_Barang	uint		`json:"ID_Barang" form:"ID_Barang"`
+	Barang_Name string   	`json:"nama_barang" form:"nama_barang"`
+	Category    string   	`json:"category" form:"category"`
+	Description string   	`json:"description" form:"description"`
+	Photo       string 	 	`json:"photo" form:"photo"`
+	Quantity    int  		`json:"qty" form:"qty"`
+	Barangmasuk   BarangIN  `gorm:"foreignKey:ID_Barang" references:"ID_Barang"`
+	Barangkeluar  BarangOUT `gorm:"foreignKey:ID_Barang" references:"ID_Barang"`
+}
+
+type BarangOUT struct {
+	ID_Barang		uint   `json:"ID_Barang" form:"ID_Barang"`
+	Nama_Barang     string `json:"nama_barang" form:"nama_barang"`
+	Transaction_OUT string `json:"transaction_out" form:"transaction_out"`
+}
+
+type BarangIN struct {
+	ID_Barang		uint   `json:"ID_Barang" form:"ID_Barang"`
+	Nama_Barang     string `json:"nama_barang" form:"nama_barang"`
+	Transaction_IN  string `json:"transaction_in" form:"transaction_in"`
 }
