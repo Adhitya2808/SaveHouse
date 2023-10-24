@@ -1,15 +1,13 @@
 package main
 
 import (
-	"Mini-ProjectGO/config"
-	"fmt"
-
-	"github.com/labstack/echo/v4"
+	"SaveHouse/config"
+	"SaveHouse/routes"
 )
 
 func main() {
-	e := echo.New()
-	var config = configs.InitConfig()
+	e := routes.New()
+	config.ConnectDB()
 
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", config.ServerPort)))
+	e.Logger.Fatal(e.Start(":8000"))
 }
