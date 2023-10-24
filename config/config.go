@@ -2,77 +2,46 @@ package config
 
 import (
 	"SaveHouse/models"
-	"os"
-	"strconv"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/joho/godotenv"
 	"fmt"
+	"os"
+
+	"path/filepath"
+
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var (
-  	DB *gorm.DB
-)
+var DB *gorm.DB
 
-
-
-type Config struct {
-	SERVER_PORT int
-	DB_USER string
-	DB_PASS string
-	DB_HOST	string
-	DB_PORT	int
-	DB_NAME string
-	SIGN_KEY string
-	CLOUD_URL string
-	REFRESH_KEY string
-}
-
-
-
-func LoadDBConfig() Config {
-	godotenv.Load(".env")
-
-	DB_PORT, err := strconv.Atoi(os.Getenv("DB_PORT"))
-	SERVER_PORT, err := strconv.Atoi(os.Getenv("SERVER_PORT"))
+func ConnectDB() {
+	err := godotenv.Load(filepath.Join(".", ".env"))
 	if err != nil {
-		panic(err)
+		fmt.Println("Error loading .env file")
+		os.Exit(1)
 	}
 
-	return Config {
-		DB_USER: os.Getenv("DB_USER"),
-		DB_PASS: os.Getenv("DB_PASS"),
-		DB_HOST: os.Getenv("DB_HOST"),
-		DB_PORT: DB_PORT,
-		DB_NAME: os.Getenv("DB_NAME"),
-		SERVER_PORT: SERVER_PORT,
-		SIGN_KEY: os.Getenv("SIGN_KEY"),
-		CLOUD_URL: os.Getenv("CLOUDINARY_URL"),
-		REFRESH_KEY: os.Getenv("REFRESH_KEY"),
-	}
-}
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASS")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
 
-
-
-func InitDB() *gorm.DB{
-
-	config := LoadDBConfig()
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		dbUser, dbPass, dbHost, dbPort, dbName)
 	
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DB_USER, config.DB_PASS, config.DB_HOST, config.DB_PORT, config.DB_NAME)
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
+	var errDB error
+	DB, errDB = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if errDB != nil {
+		panic("Failed to Connect Database")
 	}
 
-	InitialMigration(db)
+    InitMigrate()
 
-	return db
+	fmt.Println("Connected to Database")
+
 }
 
-
-func InitialMigration(db *gorm.DB) {
-  	db.AutoMigrate(&models.User{},&models.BarangIN{})
-	db.AutoMigrate(&models.Barang{},&models.BarangOUT{})
+func InitMigrate() {
+	DB.AutoMigrate(&models.User{}, &models.Barang{}, &models.BarangIN{}, &models.BarangOUT{})
 }
