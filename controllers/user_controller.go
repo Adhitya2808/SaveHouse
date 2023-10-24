@@ -2,111 +2,74 @@ package controllers
 
 import (
 	"SaveHouse/config"
-	//h "SaveHouse/helpers"
-    //m "SaveHouse/middleware"
+	"SaveHouse/middleware"
 	"SaveHouse/models"
+	"SaveHouse/models/web"
+	"SaveHouse/utils"
+	"SaveHouse/utils/req"
+	"SaveHouse/utils/res"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	//"gorm.io/gorm"
 )
 
-func GetUsersController(c echo.Context) error {
-    var users []models.User
-    if err := config.DB.Find(&users).Error; err != nil {
-        return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-    }
-    return c.JSON(http.StatusOK, map[string]interface{}{
-        "message": "success get all users",
-        "users":   users,
-    })
-}
-
-func GetUserController(c echo.Context) error {
+func UserbyID(c echo.Context) error {
     id, err := strconv.Atoi(c.Param("id"))
     if err != nil {
-        return echo.NewHTTPError(http.StatusBadRequest, "Invalid user ID")
+        return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid User ID"))
     }
-    var user []models.User
-    if err := config.DB.First(&user, id).Error; err != nil {
-        return echo.NewHTTPError(http.StatusNotFound, "User not found")
+
+    var  user  models.User
+
+    if err := config.DB.First(&user, id).Error; err != nil{
+        return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrive user"))
     }
-    return c.JSON(http.StatusOK, map[string]interface{}{
-        "message": "success get user",
-        "user":    user,
-    })
+
+    response := res.ConvertGeneral(&user)
+
+    return c.JSON(http.StatusOK, utils.SuccessResponse("User data successfully retrieve", response))
 }
 
-func CreateUserController(c echo.Context) error {
-    user := models.User{}
-    c.Bind(&user)
-    if err := config.DB.Create(&user).Error; err != nil {
-        return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+func UserRegister(c echo.Context) error {
+    var user web.UserRequest
+
+    if err := c.Bind(&user); err != nil{
+        return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid Request Body"))
     }
-    return c.JSON(http.StatusOK, map[string]interface{}{
-        "message": "success create new user",
-        "user":    user,
-    })
+
+    userDB := req.PassBody(user)
+    userDB.Password = middleware.HashPassword(userDB.Password)
+
+    if err := config.DB.Create(&userDB).Error; err != nil{
+        return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("failed to regist user data"))
+    }
+
+    response := res.ConvertGeneral(userDB)
+    return c.JSON(http.StatusCreated, utils.SuccessResponse("Success Created Data", response))
 }
 
-func DeleteUserController(c echo.Context) error {
-    id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        return echo.NewHTTPError(http.StatusBadRequest, "Invalid user ID")
-    }
-	var user models.User
-    if err := config.DB.Delete(&user, id).Error; err != nil {
-        return echo.NewHTTPError(http.StatusInternalServerError, "Failed to delete user")
-    }
-    return c.JSON(http.StatusOK, map[string]string{
-        "message": "User deleted",
-    })
-}
+func UserLogin(c echo.Context) error {
+    var loginRequest web.UserLoginRequest
 
-func UpdateUserController(c echo.Context) error {
-    var update_user models.User
-    if err := c.Bind(&update_user); err != nil{
-        return c.JSON(http.StatusBadRequest, models.BaseResponse{
-            Status: false,
-            Message: "User Not Found",
-            Data : nil,
-        })
+    if err := c.Bind(&loginRequest); err != nil{
+        return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid request body"))
     }
-    ID, err := strconv.Atoi(c.Param("id"))
-    if err != nil{
-        return c.JSON(http.StatusBadRequest, models.BaseResponse{
-            Status: false,
-            Message: "Invalid User ID",
-            Data : nil,
-        })
+    var user models.User
+    if err := config.DB.Where("username = ? AND role = user", loginRequest.Username).First(&user).Error; err != nil{
+        return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
     }
-    exsitinguser := models.User{}
-    err = config.DB.First(&exsitinguser, ID).Error
-    if err != nil {
-            return c.JSON(http.StatusInternalServerError, models.BaseResponse{
-            Status: false,
-            Message: "Failed to Fetch user",
-            Data : nil,
-        })
-    }
-    exsitinguser.Username = update_user.Username
-    exsitinguser.Name = update_user.Name
-    exsitinguser.Email = update_user.Email
-    exsitinguser.Role = update_user.Role
-    exsitinguser.Password = update_user.Password
 
-    err = config.DB.Save(&exsitinguser).Error
-    if err != nil{
-        return c.JSON(http.StatusInternalServerError, models.BaseResponse{
-            Status: false,
-            Message: "Failed to update user",
-            Data : nil,
-        })
+    if err := middleware.ComparePassword(user.Password, loginRequest.Password); err != nil{
+        return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
     }
-    return c.JSON(http.StatusOK, models.BaseResponse{
-            Status: true,
-            Message: "Update Successfully",
-            Data : nil,
-    })
+
+    token := middleware.CreateTokenUser(int(user.ID), user.Name)
+
+    response := web.UserLoginResponse{
+        Username: user.Username,
+        Password: user.Password,
+        Token   : token,
+    }
+    return c.JSON(http.StatusOK, utils.SuccessResponse("Login User Successful", response))
 }
