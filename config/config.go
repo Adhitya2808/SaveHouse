@@ -1,76 +1,47 @@
 package config
 
 import (
+	"SaveHouse/models"
+	"fmt"
 	"os"
-	"strconv"
+
+	"path/filepath"
 
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-type ProgrammingConfig struct {
-	ServerPort int
-	DBPort     string
-	DBHost     string
-	DBUser     string
-	DBPass     string
-	DBName     string
-	Secret     string
-}
+var DB *gorm.DB
 
-func InitConfig() *ProgrammingConfig {
-	var res = new(ProgrammingConfig)
-	res = loadConfig()
-
-	if res == nil {
-		logrus.Fatal("Config : Cannot start program, failed to load configuration")
-		return nil
-	}
-
-	return res
-}
-
-func loadConfig() *ProgrammingConfig {
-	var res = new(ProgrammingConfig)
-	err := godotenv.Load(".env")
-
+func ConnectDB() {
+	err := godotenv.Load(filepath.Join(".", ".env"))
 	if err != nil {
-		logrus.Error("Config : Cannot load config file,", err.Error())
+		fmt.Println("Error loading .env file")
+		os.Exit(1)
 	}
 
-	if val, found := os.LookupEnv("SERVER"); found {
-		port, err := strconv.Atoi(val)
-		if err != nil {
-			logrus.Error("Config : Invalid port value,", err.Error())
-			return nil
-		}
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASS")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
 
-		res.ServerPort = port
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		dbUser, dbPass, dbHost, dbPort, dbName)
+	
+	var errDB error
+	DB, errDB = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if errDB != nil {
+		panic("Failed to Connect Database")
 	}
 
-	if val, found := os.LookupEnv("DBPORT"); found {
-		res.DBPort = val
-	}
+    InitMigrate()
 
-	if val, found := os.LookupEnv("DBHOST"); found {
-		res.DBHost = val
-	}
+	fmt.Println("Connected to Database")
 
-	if val, found := os.LookupEnv("DBUSER"); found {
-		res.DBUser = val
-	}
+}
 
-	if val, found := os.LookupEnv("DBPASS"); found {
-		res.DBPass = val
-	}
-
-	if val, found := os.LookupEnv("DBNAME"); found {
-		res.DBName = val
-	}
-
-	if val, found := os.LookupEnv("SECRET"); found {
-		res.Secret = val
-	}
-
-	return res
+func InitMigrate() {
+	DB.AutoMigrate(&models.User{}, &models.Barang{}, &models.BarangIN{}, &models.BarangOUT{})
 }
