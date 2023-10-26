@@ -9,13 +9,13 @@ import (
 
 func CreateBarangIN(c echo.Context) error {
 	// Parse JSON request body into a BarangIN models
-	Barangmasuk := models.BarangIN{}
+	var Barangmasuk models.BarangIN
 	if err := c.Bind(&Barangmasuk); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
-
+	
 	// Create the new BarangIN in the database
-	if err := config.DB.Find(&Barangmasuk).Create(&Barangmasuk).Error; err != nil {
+	if err := config.DB.Create(&Barangmasuk).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create Barang_IN"})
 	}
 
@@ -34,7 +34,7 @@ func GetAllBarangIN(c echo.Context) error {
 }
 
 func DeleteBarangIN(c echo.Context) error {
-	id := c.Param("id")
+	id := c.Param("trx_id")
 
 	var barang models.BarangIN
 	if err := config.DB.First(&barang, id).Error; err != nil {
@@ -49,7 +49,7 @@ func DeleteBarangIN(c echo.Context) error {
 }
 
 func UpdateBarangIN(c echo.Context) error {
-	id := c.Param("id")
+	id := c.Param("trx_id")
 
 	var barang models.BarangIN
 	if err := config.DB.First(&barang, id).Error; err != nil {
