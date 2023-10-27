@@ -92,8 +92,7 @@ func LoginAdmin(c echo.Context) error {
 	// Buat respons dengan data yang diminta
 	response := web.UserLoginResponse{
 		Username: user.Username,
-		Password: loginRequest.Password,
-		Token:    token,
+		Token: token,
 	}
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("LoginUser successful", response))
