@@ -4,7 +4,6 @@ import (
 	"SaveHouse/config"
 	"SaveHouse/middleware"
 	"SaveHouse/models"
-	"SaveHouse/models/web"
 	"SaveHouse/utils"
 	"SaveHouse/utils/res"
 	"github.com/labstack/echo/v4"
@@ -14,7 +13,10 @@ import (
 
 func AllUser(c echo.Context) error {
 	var users []models.User
-
+	role := middleware.ExtractTokenUserRole(c)
+    if role != "admin" {
+        return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Premission is not admin"))
+    }
 	err := config.DB.Find(&users).Error
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve user"))
@@ -65,35 +67,12 @@ func UserDelete(c echo.Context) error {
 	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve user"))
 	}
-
+	
+	role := middleware.ExtractTokenUserRole(c)
+    if role != "admin" {
+        return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Premission is not admin"))
+    }
 	config.DB.Delete(&existingUser)
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("User data successfully deleted", nil))
-}
-
-func LoginAdmin(c echo.Context) error {
-	var loginRequest web.UserLoginRequest
-
-	if err := c.Bind(&loginRequest); err != nil {
-		return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid request body"))
-	}
-
-	var user models.User
-	if err := config.DB.Where("username = ?", loginRequest.Username).First(&user).Error; err != nil {
-		return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credentials"))
-	}
-
-	if err := middleware.ComparePassword(user.Password, loginRequest.Password); err != nil {
-		return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credentials"))
-	}
-
-	token := middleware.CreateTokenAdmin(int(user.ID), user.Name)
-
-	// Buat respons dengan data yang diminta
-	response := web.UserLoginResponse{
-		Username: user.Username,
-		Token: token,
-	}
-
-	return c.JSON(http.StatusOK, utils.SuccessResponse("LoginUser successful", response))
 }

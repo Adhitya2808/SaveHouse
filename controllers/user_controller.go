@@ -21,7 +21,10 @@ func UserbyID(c echo.Context) error {
     }
 
     var  user  models.User
-
+    role := middleware.ExtractTokenUserRole(c)
+    if role != "admin" {
+        return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Premission is not admin"))
+    }
     if err := config.DB.First(&user, id).Error; err != nil{
         return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrive user"))
     }
@@ -56,19 +59,19 @@ func UserLogin(c echo.Context) error {
         return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid request body"))
     }
     var user models.User
-    if err := config.DB.Where("username = ? AND role = user", loginRequest.Username).First(&user).Error; err != nil{
+    if err := config.DB.Where("username = ?", loginRequest.Username).First(&user).Error; err != nil{
         return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
     }
 
     if err := middleware.ComparePassword(user.Password, loginRequest.Password); err != nil{
         return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
     }
-
-    token := middleware.CreateTokenUser(int(user.ID), user.Name)
-
+    token, err := middleware.CreateToken(int(user.ID), user.Username, user.Role)
+    if err != nil{
+        return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to create token"))
+    }
     response := web.UserLoginResponse{
         Username: user.Username,
-        Password: user.Password,
         Token   : token,
     }
     return c.JSON(http.StatusOK, utils.SuccessResponse("Login User Successful", response))
