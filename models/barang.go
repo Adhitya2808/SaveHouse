@@ -13,18 +13,18 @@ type Barang struct {
 	Description  string    `json:"description" form:"description"`
 	Photo        string    `json:"photo" form:"photo"`
 	Quantity     int       `json:"qty" form:"qty"`
-	//Barangmasuk  BarangIN  `gorm:"foreignKey:Trx_id"`
-	//Barangkeluar BarangOUT `gorm:"foreignKey:Trx_id"`
+	Barangmasuk  BarangIN  `gorm:"foreignKey:Trx_id"`
+	Barangkeluar BarangOUT `gorm:"foreignKey:Trx_id"`
 }
 
 type BarangOUT struct {
 	Trx_id          uint   	  `json:"id_barang" form:"trx_id"`
-	Transaction_OUT time.Time `gorm:"type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"transaction_out"`
+	Transaction_OUT time.Time `gorm:"type:timestamp" json:"transaction_out"`
 }
 
 type BarangIN struct {
 	Trx_id         uint   	 `json:"id_barang" form:"trx_id"`
-	Transaction_IN time.Time `gorm:"type:timestamp DEFAULT CURRENT_TIMESTAMP" json:"transaction_in"`
+	Transaction_IN time.Time `gorm:"type:timestamp" json:"transaction_in"`
 }
 
 type BarangResponse struct{
@@ -35,5 +35,4 @@ type BarangResponse struct{
 	Quantity     int       `json:"qty"`
 	Photo		 string	   `json:"photo"`
 }
-
 
