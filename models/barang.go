@@ -35,4 +35,3 @@ type BarangResponse struct{
 	Quantity     int       `json:"qty"`
 	Photo		 string	   `json:"photo"`
 }
-
