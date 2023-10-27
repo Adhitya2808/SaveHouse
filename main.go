@@ -1,15 +1,13 @@
 package main
 
 import (
-	"Warehouse_barang/config"
-	"fmt"
-
-	"github.com/labstack/echo/v4"
+	"SaveHouse/config"
+	"SaveHouse/routes"
 )
 
 func main() {
-	e := echo.New()
-	var config = configs.InitConfig()
-
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", config.ServerPort)))
+	e := routes.New()
+	config.ConnectDB()
+	e.Logger.Fatal(e.Start(":8000"))
 }
+
