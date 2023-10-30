@@ -91,7 +91,7 @@ func GetAllBarang(c echo.Context) error {
 	var barangs []models.Barang
 
 	if err := config.DB.Find(&barangs).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve room types"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve All Barang"})
 	}
 
 	return c.JSON(http.StatusOK, barangs)

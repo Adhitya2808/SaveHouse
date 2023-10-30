@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"fmt"
-	echojwt "github.com/labstack/echo-jwt/v4"
 	"net/http"
 	"os"
 	"time"
@@ -12,34 +11,36 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func JWTMiddleware() echo.MiddlewareFunc {
-	SecretKey := os.Getenv("JWT_KEY")
-	return echojwt.WithConfig(echojwt.Config{
-		SigningKey:    []byte(SecretKey),
-		SigningMethod: "HS256",
-	})
+type JwtCustomClaims struct {
+	ID      uint   `json:"id"`
+	Userame string `json:"username"`
+	jwt.RegisteredClaims
 }
 
-func CreateToken(userId int, name, role string) (string, error) {
-	SecretKey := os.Getenv("JWT_KEY")
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["ID"] = userId
-	claims["name"] = name
-	claims["role"] = role
-	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(SecretKey))
+func CreateTokenUser(userId int, username string) string {
+	var payloadParser JwtCustomClaims
+	UserSecretKey := os.Getenv("USER_SECRET")
+
+	payloadParser.ID = uint(userId)
+	payloadParser.Userame = username
+	payloadParser.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Minute * 60))
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payloadParser)
+	t, _ := token.SignedString([]byte(UserSecretKey))
+	return t
 }
 
-func ExtractTokenUserRole(e echo.Context) string {
-	user := e.Get("user").(*jwt.Token)
-	if user.Valid {
-		claims := user.Claims.(jwt.MapClaims)
-		role := claims["role"].(string)
-		return role
-	}
-	return "user"
+func CreateTokenAdmin(userId int, username string) string {
+	var payloadParser JwtCustomClaims
+	AdminSecretKey := os.Getenv("ADMIN_SECRET")
+
+	payloadParser.ID = uint(userId)
+	payloadParser.Userame = username
+	payloadParser.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Minute * 60))
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payloadParser)
+	t, _ := token.SignedString([]byte(AdminSecretKey))
+	return t
 }
 
 func HashPassword(password string) string {
