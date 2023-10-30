@@ -5,6 +5,7 @@ import "SaveHouse/models"
 func AllBarangsResponse(barangResponse models.Barang) models.BarangResponse {
 	return models.BarangResponse{
 		Barang_Name: barangResponse.Barang_Name,
+		TipeGudang:  barangResponse.TipeGudang,
 		Category:    barangResponse.Category,
 		Description: barangResponse.Description,
 		Photo:       barangResponse.Photo,
@@ -16,6 +17,7 @@ func AllHistoryResponse(historyResponse models.Barang) models.HistoryResponse {
 	response := models.HistoryResponse{
 		Trx_id:      historyResponse.ID,
 		Barang_Name: historyResponse.Barang_Name,
+		TipeGudang:  historyResponse.TipeGudang,
 		Category:    historyResponse.Category,
 		Description: historyResponse.Description,
 		Photo:       historyResponse.Photo,

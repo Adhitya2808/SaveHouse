@@ -12,8 +12,7 @@ func ConvertIndex(users []models.User) []web.UserResponse {
 			ID:       int(user.ID),
 			Name:     user.Name,
 			Username: user.Username,
-			Email:    user.Email,
-			Role: 	  user.Role,	
+			Role:     string(user.Role),
 		}
 		results = append(results, userResponse)
 	}
@@ -26,7 +25,6 @@ func ConvertGeneral(user *models.User) web.UserResponse {
 		ID:       int(user.ID),
 		Name:     user.Name,
 		Username: user.Username,
-		Email:    user.Email,
-		Role: 	  user.Role,	
+		Role:     string(user.Role),
 	}
 }
