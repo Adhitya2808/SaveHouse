@@ -7,7 +7,7 @@
 - DB : Maria DB (phpmyadmin pada GCP)
 - Deployment : Google Cloud Platform, Github Action
 - Code Structure : MVC
-- Authentication : JWT (admin, user)
+- Authentication : JWT (admin)
 - Other Tools / Libraries : cloudinary (foto)
 
 ## ERD
