@@ -14,4 +14,4 @@
 Link : [Entity Relationship Diagram SaveHouse](https://app.eraser.io/workspace/UnifEQoVqpKeMtyo2Pmw?origin=share)
 
 ## API SPEC and Test Response
-Link : [API Spec WareHouse](https://www.postman.com/grey-sunset-52573/workspace/mini-project/collection/29066574-64048d63-abcc-4b58-9217-15a71e5a85f7?action=share&creator=29066574)
+Link : [API Spec WareHouse](https://documenter.getpostman.com/view/29066574/2s9YXb8QdU)
