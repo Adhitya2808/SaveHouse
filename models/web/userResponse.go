@@ -8,6 +8,7 @@ type UserResponse struct{
 	Email		string `json:"email" form:"email"`
 }
 
+<<<<<<< Updated upstream
 type UserLoginResponse struct {
 	ID			int	   `json:"id"`
 	Username	string `json:"username"`
@@ -15,3 +16,14 @@ type UserLoginResponse struct {
 	Token		string `json:"token"`
 	Password 	string `json:"password"`
 }
+=======
+type AdminLoginResponse struct {
+	Username string `json:"username"`
+	Name     string `json:"name"`
+	Token    string `json:"token"`
+}
+type UserLoginResponse struct {
+	Username string `json:"username"`
+	Name     string `json:"name"`
+}
+>>>>>>> Stashed changes

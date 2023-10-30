@@ -17,10 +17,17 @@ import (
 )
 
 func UserbyID(c echo.Context) error {
+<<<<<<< Updated upstream
     id, err := strconv.Atoi(c.Param("id"))
     if err != nil {
         return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid User ID"))
     }
+=======
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid User ID"))
+	}
+>>>>>>> Stashed changes
 
     var  user  models.User
 
@@ -33,8 +40,14 @@ func UserbyID(c echo.Context) error {
     return c.JSON(http.StatusOK, utils.SuccessResponse("User data successfully retrieve", response))
 }
 
+<<<<<<< Updated upstream
 func UserRegister(c echo.Context) error {
     var user web.UserRequest
+=======
+func Store(c echo.Context) error {
+	var user web.UserRequest
+	user.Role = models.UserRole
+>>>>>>> Stashed changes
 
     if err := c.Bind(&user); err != nil{
         return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid Request Body"))
@@ -62,6 +75,7 @@ func UserLogin(c echo.Context) error {
         return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
     }
 
+<<<<<<< Updated upstream
     if err := middleware.ComparePassword(user.Password, loginRequest.Password); err != nil{
         return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
     }
@@ -75,3 +89,14 @@ func UserLogin(c echo.Context) error {
     }
     return c.JSON(http.StatusOK, utils.SuccessResponse("Login User Successful", response))
 }
+=======
+	if err := middleware.ComparePassword(user.Password, loginRequest.Password); err != nil {
+		return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
+	}
+	response := web.UserLoginResponse{
+		Username: user.Username,
+		Name:     user.Name,
+	}
+	return c.JSON(http.StatusOK, utils.SuccessResponse("Login User Successful", response))
+}
+>>>>>>> Stashed changes

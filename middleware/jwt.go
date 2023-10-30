@@ -2,21 +2,26 @@ package middleware
 
 import (
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/labstack/echo/v4"
-	"golang.org/x/crypto/bcrypt"
 )
 
+<<<<<<< Updated upstream
 type jwtCustomClaims struct {
+=======
+type JwtCustomClaims struct {
+>>>>>>> Stashed changes
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 	jwt.RegisteredClaims
 }
 
+<<<<<<< Updated upstream
 func CreateTokenUser(userId int, name string) string {
 	var payloadParser jwtCustomClaims
 	UserSecretKey := os.Getenv("USER_SECRET")
@@ -32,6 +37,15 @@ func CreateTokenUser(userId int, name string) string {
 
 func CreateTokenAdmin(userId int, name string) string {
 	var payloadParser jwtCustomClaims
+=======
+func CreateTokenAdmin(userId int, name string) string {
+	err := godotenv.Load(".env")
+	if err != nil {
+		return "gagal mengakses .env"
+	}
+
+	var payloadParser JwtCustomClaims
+>>>>>>> Stashed changes
 	AdminSecretKey := os.Getenv("ADMIN_SECRET")
 
 	payloadParser.ID = uint(userId)

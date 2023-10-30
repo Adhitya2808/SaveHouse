@@ -90,10 +90,19 @@ func LoginAdmin(c echo.Context) error {
 	token := middleware.CreateTokenAdmin(int(user.ID), user.Name)
 
 	// Buat respons dengan data yang diminta
-	response := web.UserLoginResponse{
+	response := web.AdminLoginResponse{
 		Username: user.Username,
+<<<<<<< Updated upstream
 		Token: token,
 	}
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("LoginUser successful", response))
 }
+=======
+		Name:     user.Name,
+		Token:    token,
+	}
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("LoginUser successful", response))
+}
+>>>>>>> Stashed changes

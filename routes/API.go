@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+<<<<<<< Updated upstream
 func New() *echo.Echo{
 	e := echo.New()
 
@@ -22,6 +23,23 @@ func New() *echo.Echo{
 
 	//user := e.Group("")
 	//user.Use(jwt.JWT([]byte(Userkey)))
+=======
+func New() *echo.Echo {
+
+	e := echo.New()
+
+	AdminSecretKey := os.Getenv("ADMIN_SECRET")
+
+	admin := e.Group("")
+	admin.Use(echojwt.JWT([]byte(AdminSecretKey)))
+	e.Use(middleware.NotFoundHandler)
+
+	//LOGIN USER DAN ADMIN
+	e.POST("/login", controllers.UserLogin)
+	e.POST("/login/admin", controllers.AdminLogin)
+
+	//BARANG
+>>>>>>> Stashed changes
 	e.GET("/history", controllers.GetAllHistory)
 	e.POST("/barang", controllers.CreateBarang)
 	e.GET("/barang", controllers.GetAllBarang)
@@ -33,6 +51,7 @@ func New() *echo.Echo{
 	e.POST("/barangmasuk", controllers.CreateBarangIN)
 	e.GET("/barangmasuk", controllers.GetAllBarangIN)
 
+<<<<<<< Updated upstream
 	//barang keluar
 	e.POST("/barangkeluar", controllers.CreateBarangOUT)
 	e.GET("/barangkeluar", controllers.GetAllBarangOUT)
@@ -47,5 +66,17 @@ func New() *echo.Echo{
 	e.PUT("/akun/:id", controllers.UserUpdate)
 
 	
+=======
+	//ADMIN
+	admin.GET("/akun", controllers.AllUser)
+	admin.GET("/akun/:id", controllers.UserbyID)
+	e.POST("/akun", controllers.Store)
+	admin.DELETE("/akun/:id", controllers.UserDelete)
+	e.PUT("/akun/:id", controllers.UserUpdate)
+
+	//AI
+	e.POST("/rekomendasi", controllers.GetRecommendation)
+
+>>>>>>> Stashed changes
 	return e
 }

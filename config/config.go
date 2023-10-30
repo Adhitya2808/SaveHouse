@@ -44,4 +44,8 @@ func ConnectDB() {
 
 func InitMigrate() {
 	DB.AutoMigrate(&models.User{}, &models.Barang{}, &models.BarangIN{}, &models.BarangOUT{})
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
