@@ -3,42 +3,41 @@ package controllers
 import (
 	"SaveHouse/config"
 	"SaveHouse/models"
-<<<<<<< Updated upstream
-=======
 	"SaveHouse/service"
-	"SaveHouse/utils"
->>>>>>> Stashed changes
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strconv"
 )
 
 func CreateBarang(c echo.Context) error {
 	// Parse JSON request body into a Barang models
-	Barang := models.Barang{}
+	var Barang models.Barang
+
 	if err := c.Bind(&Barang); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
 	// Create the new Barang in the database
+	fileheader := "photo"
+	Barang.Photo = service.CloudinaryUpload(c, fileheader)
 	if err := config.DB.Create(&Barang).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create Barang_IN"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create Barang Detail"})
 	}
 
-	// Return a JSON response with the created BarangIN
+	var BarangMasuk models.BarangIN
+	BarangMasuk.Transaction_IN = config.DB.NowFunc()
+	BarangMasuk.Trx_id = Barang.ID
+	if err := config.DB.Create(&BarangMasuk).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create Barang_IN"})
+	}
+	if err := config.DB.Preload("Barangmasuk").Find(&Barang).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve Barang"})
+	}
+	models.BarangResponseConvert(Barang)
+
+	// Return a JSON response with the created Barang
 	return c.JSON(http.StatusCreated, Barang)
 }
 
-<<<<<<< Updated upstream
-func GetAllBarang(c echo.Context) error {
-	var barangs []models.Barang
-
-	if err := config.DB.Find(&barangs).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve room types"})
-	}
-
-	return c.JSON(http.StatusOK, barangs)
-=======
 func GetBarangByID(c echo.Context) error {
 	id := c.Param("id")
 	var barang []models.Barang
@@ -47,13 +46,14 @@ func GetBarangByID(c echo.Context) error {
 	}
 	var responselist []models.BarangResponse
 	for _, Barang := range barang {
-		response := utils.AllBarangsResponse(Barang)
+		response := service.AllBarangsResponse(Barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)
 }
 
 func UpdateBarang(c echo.Context) error {
+
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid ID"})
@@ -80,7 +80,6 @@ func UpdateBarang(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("Barang data successfully updated", response))
 
->>>>>>> Stashed changes
 }
 
 func DeleteBarang(c echo.Context) error {
@@ -98,22 +97,13 @@ func DeleteBarang(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "Barang_IN successfully deleted"})
 }
 
-func UpdateBarang(c echo.Context) error {
-	id := c.Param("id")
 
-	var barang models.BarangIN
-	if err := config.DB.First(&barang, id).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve room type"})
+func GetAllBarang(c echo.Context) error {
+	var barangs []models.Barang
+
+	if err := config.DB.Find(&barangs).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve All Barang"})
 	}
 
-	if err := c.Bind(&barang).Error; err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Cannot bind tipe kamar"})
-	}
-
-	if err := config.DB.Save(&barang).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update room type"})
-	}
-
-	return c.JSON(http.StatusOK, barang)
-
+	return c.JSON(http.StatusOK, barangs)
 }

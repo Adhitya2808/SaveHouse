@@ -71,7 +71,7 @@ func UserDelete(c echo.Context) error {
 	return c.JSON(http.StatusOK, utils.SuccessResponse("User data successfully deleted", nil))
 }
 
-func LoginAdmin(c echo.Context) error {
+func AdminLogin(c echo.Context) error {
 	var loginRequest web.UserLoginRequest
 
 	if err := c.Bind(&loginRequest); err != nil {
@@ -79,8 +79,8 @@ func LoginAdmin(c echo.Context) error {
 	}
 
 	var user models.User
-	if err := config.DB.Where("username = ?", loginRequest.Username).First(&user).Error; err != nil {
-		return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credentials"))
+	if err := config.DB.Where("username = ? AND role = ?", loginRequest.Username, models.AdminRole).First(&user).Error; err != nil {
+		return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Role is not Admin"))
 	}
 
 	if err := middleware.ComparePassword(user.Password, loginRequest.Password); err != nil {
@@ -90,19 +90,10 @@ func LoginAdmin(c echo.Context) error {
 	token := middleware.CreateTokenAdmin(int(user.ID), user.Name)
 
 	// Buat respons dengan data yang diminta
-	response := web.AdminLoginResponse{
+	response := web.UserLoginResponse{
 		Username: user.Username,
-<<<<<<< Updated upstream
-		Token: token,
-	}
-
-	return c.JSON(http.StatusOK, utils.SuccessResponse("LoginUser successful", response))
-}
-=======
-		Name:     user.Name,
 		Token:    token,
 	}
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("LoginUser successful", response))
 }
->>>>>>> Stashed changes

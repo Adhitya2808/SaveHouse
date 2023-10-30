@@ -11,23 +11,20 @@ import (
 	"time"
 )
 
-<<<<<<< Updated upstream
-type jwtCustomClaims struct {
-=======
+
+
 type JwtCustomClaims struct {
->>>>>>> Stashed changes
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
+	ID      uint   `json:"id"`
+	Userame string `json:"username"`
 	jwt.RegisteredClaims
 }
 
-<<<<<<< Updated upstream
-func CreateTokenUser(userId int, name string) string {
-	var payloadParser jwtCustomClaims
+func CreateTokenUser(userId int, username string) string {
+	var payloadParser JwtCustomClaims
 	UserSecretKey := os.Getenv("USER_SECRET")
 
 	payloadParser.ID = uint(userId)
-	payloadParser.Name = name
+	payloadParser.Userame = username
 	payloadParser.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Minute * 60))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payloadParser)
@@ -35,21 +32,13 @@ func CreateTokenUser(userId int, name string) string {
 	return t
 }
 
-func CreateTokenAdmin(userId int, name string) string {
-	var payloadParser jwtCustomClaims
-=======
-func CreateTokenAdmin(userId int, name string) string {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return "gagal mengakses .env"
-	}
 
+func CreateTokenAdmin(userId int, name string) string {
 	var payloadParser JwtCustomClaims
->>>>>>> Stashed changes
 	AdminSecretKey := os.Getenv("ADMIN_SECRET")
 
 	payloadParser.ID = uint(userId)
-	payloadParser.Name = name
+	payloadParser.Userame = username
 	payloadParser.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Minute * 60))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payloadParser)

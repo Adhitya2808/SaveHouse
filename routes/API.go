@@ -9,21 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-<<<<<<< Updated upstream
-func New() *echo.Echo{
-	e := echo.New()
 
-	AdminSecretkey := os.Getenv("ADMIN_SECRET")
-	//UserSecretkey	 := os.Getenv("USER_SECRET")
-	e.Use(middleware.NotFoundHandler)
-
-	//LOGIN USER DAN ADMIN
-	e.POST("admin/login", controllers.LoginAdmin)
-	e.POST("user/login", controllers.UserLogin)
-
-	//user := e.Group("")
-	//user.Use(jwt.JWT([]byte(Userkey)))
-=======
 func New() *echo.Echo {
 
 	e := echo.New()
@@ -32,51 +18,32 @@ func New() *echo.Echo {
 
 	admin := e.Group("")
 	admin.Use(echojwt.JWT([]byte(AdminSecretKey)))
+
 	e.Use(middleware.NotFoundHandler)
 
 	//LOGIN USER DAN ADMIN
 	e.POST("/login", controllers.UserLogin)
-	e.POST("/login/admin", controllers.AdminLogin)
+	e.POST("/admin/login", controllers.AdminLogin)
 
 	//BARANG
->>>>>>> Stashed changes
 	e.GET("/history", controllers.GetAllHistory)
-	e.POST("/barang", controllers.CreateBarang)
+	e.GET("/history/", controllers.Searching)
+	e.POST("/in/barang", controllers.CreateBarang)
+	e.PUT("/in/barang/:id", controllers.UpdateBarang)
+	e.DELETE("/in/barang/:id", controllers.DeleteBarang)
+	e.POST("/out/barang", controllers.CreateBarangOUT)
 	e.GET("/barang", controllers.GetAllBarang)
-	e.GET("/barang/:id", controllers.GetBarangByID)
-	e.PUT("/barang/:id", controllers.UpdateBarang)
-	e.DELETE("/barang/:id", controllers.DeleteBarang)
-	
-	//barang masuk
-	e.POST("/barangmasuk", controllers.CreateBarangIN)
-	e.GET("/barangmasuk", controllers.GetAllBarangIN)
 
-<<<<<<< Updated upstream
-	//barang keluar
-	e.POST("/barangkeluar", controllers.CreateBarangOUT)
-	e.GET("/barangkeluar", controllers.GetAllBarangOUT)
-
-	//ADMIN 
-	Admin := e.Group("/admin")
-	Admin.Use(echojwt.JWT([]byte(AdminSecretkey)))
-	Admin.GET("/akun", controllers.AllUser)
-	e.GET("/akun/:id", controllers.UserbyID)
-	e.POST("/akun", controllers.UserRegister)
-	e.DELETE("/akun/:id", controllers.UserDelete)
-	e.PUT("/akun/:id", controllers.UserUpdate)
-
-	
-=======
 	//ADMIN
-	admin.GET("/akun", controllers.AllUser)
-	admin.GET("/akun/:id", controllers.UserbyID)
-	e.POST("/akun", controllers.Store)
-	admin.DELETE("/akun/:id", controllers.UserDelete)
+	e.GET("/akun", controllers.AllUser)
+	e.GET("/akun/", controllers.UserbyID)
+	e.POST("/akun", controllers.UserRegister)
+	auth.DELETE("/akun/:id", controllers.UserDelete)
 	e.PUT("/akun/:id", controllers.UserUpdate)
 
-	//AI
+
 	e.POST("/rekomendasi", controllers.GetRecommendation)
 
->>>>>>> Stashed changes
+
 	return e
 }

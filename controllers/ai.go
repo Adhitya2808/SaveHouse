@@ -35,7 +35,7 @@ func GetRecommendation(c echo.Context) error {
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleSystem,
-					Content: "Anda merupakan asisten yang dapat membantu untuk memberikan rekomendasi Tipe Gudang dimana terdapat 3 gudang yang tersedia yaitu Gudang Lotus dengan kapasitas sebanyak 100 yang alamatnya berada di jl. mekar sari jakarta, Gudang Sakura dengan kapasitas sebanyak 150 yang alamatnya berada di jl. mekar jaya jakarta, dan Gudang Rahayu dengan kapasitas sebanyak 200 yang alamatnya berada di jl. taman mini jakarta.",
+					Content: "Anda merupakan asisten yang dapat membantu untuk memberikan rekomendasi Tipe Gudang dimana terdapat 3 gudaang yang tersedia yaitu Gudang Lotus dengan kapasitas sebanyak 100 yang alamatnya berada di jl. mekar sari jakarta, Gudang Sakura dengan kapasitas sebanyak 150 yang alamatnya berada di jl. mekar jaya jakarta, dan Gudang Rahayu dengan kapasitas sebanyak 200 yang alamatnya berada di jl. taman mini jakarta.",
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,

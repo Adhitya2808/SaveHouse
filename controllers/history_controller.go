@@ -3,26 +3,20 @@ package controllers
 import (
 	"SaveHouse/config"
 	"SaveHouse/models"
-<<<<<<< Updated upstream
-=======
-	"SaveHouse/utils"
->>>>>>> Stashed changes
+	"SaveHouse/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 func GetAllHistory(c echo.Context) error {
-	var barangs []models.Barang
-	if err := config.DB.Preload("Barangmasuk").Preload("Barangkeluar").Find(&barangs).Error; err != nil {
+	var barang []models.Barang
+	if err := config.DB.Preload("Barangmasuk").Preload("Barangkeluar").Find(&barang).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve History Barang"})
 	}
-<<<<<<< Updated upstream
-	return c.JSON(http.StatusOK, barangs)
-}
-=======
 	var responselist []models.HistoryResponse
 	for _, barang := range barang {
-		response := utils.AllHistoryResponse(barang)
+		response := service.AllHistoryResponse(barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)
@@ -48,10 +42,9 @@ func Searching(c echo.Context) error {
 
 	var responselist []models.HistoryResponse
 	for _, Barang := range barang {
-		response := utils.AllHistoryResponse(Barang)
+		response := service.AllHistoryResponse(Barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)
 
 }
->>>>>>> Stashed changes

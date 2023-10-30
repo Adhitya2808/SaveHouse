@@ -1,16 +1,15 @@
 package req
 
 import (
-		"SaveHouse/models/web"
-		"SaveHouse/models"
+	"SaveHouse/models"
+	"SaveHouse/models/web"
 )
 
-func PassBody(users web.UserRequest) *models.User{
+func PassBody(users web.UserRequest) *models.User {
 	return &models.User{
-		Name	: users.Name,
+		Name:     users.Name,
 		Username: users.Username,
-		Role	: users.Role,
-		Email	: users.Email,
 		Password: users.Password,
+		Role:     users.Role,
 	}
 }
