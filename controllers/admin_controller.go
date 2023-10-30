@@ -87,7 +87,7 @@ func AdminLogin(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credentials"))
 	}
 
-	token := middleware.CreateTokenAdmin(int(user.ID), user.Username)
+	token := middleware.CreateTokenAdmin(int(user.ID), user.Name)
 
 	// Buat respons dengan data yang diminta
 	response := web.UserLoginResponse{
@@ -95,5 +95,5 @@ func AdminLogin(c echo.Context) error {
 		Token:    token,
 	}
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("Login User successful", response))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("LoginUser successful", response))
 }

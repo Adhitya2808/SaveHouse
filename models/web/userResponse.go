@@ -7,7 +7,12 @@ type UserResponse struct {
 	Role     string `json:"role" form:"role"`
 }
 
+type AdminLoginResponse struct {
+	Username string `json:"username"`
+	Name     string `json:"name"`
+	Token    string `json:"token"`
+}
 type UserLoginResponse struct {
 	Username string `json:"username"`
-	Token    string `json:"token"`
+	Name     string `json:"name"`
 }

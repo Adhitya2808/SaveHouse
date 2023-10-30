@@ -11,9 +11,12 @@ import (
 )
 
 func CloudinaryUpload(c echo.Context, fileheader string) string {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("gagal akses file .env")
+	err := godotenv.Load(".env")
+	if err != nil {
+		return "gagal mengakses .env"
 	}
+
+
 	fileHeader, _ := c.FormFile(fileheader)
 	file, _ := fileHeader.Open()
 	ctx := context.Background()

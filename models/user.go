@@ -11,8 +11,8 @@ const (
 
 type User struct {
 	gorm.Model
-	Username string
-	Password string
-	Name     string
-	Role     Role `gorm:"type:enum('Admin', 'User')" json:"Role"`
+	Username string `gorm:"unique" json:"username" form:"username"`
+	Password string `json:"password" form:"password"`
+	Name     string `json:"name" form:"name"`
+	Role     Role   `gorm:"type:enum('Admin', 'User')" json:"Role"`
 }

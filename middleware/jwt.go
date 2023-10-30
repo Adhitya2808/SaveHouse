@@ -2,14 +2,16 @@ package middleware
 
 import (
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/labstack/echo/v4"
-	"golang.org/x/crypto/bcrypt"
 )
+
+
 
 type JwtCustomClaims struct {
 	ID      uint   `json:"id"`
@@ -30,7 +32,8 @@ func CreateTokenUser(userId int, username string) string {
 	return t
 }
 
-func CreateTokenAdmin(userId int, username string) string {
+
+func CreateTokenAdmin(userId int, name string) string {
 	var payloadParser JwtCustomClaims
 	AdminSecretKey := os.Getenv("ADMIN_SECRET")
 

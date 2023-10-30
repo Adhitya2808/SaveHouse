@@ -9,14 +9,15 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+
 func New() *echo.Echo {
+
 	e := echo.New()
 
 	AdminSecretKey := os.Getenv("ADMIN_SECRET")
-	UserSecretKey := os.Getenv("USER_SECRET")
 
-	auth := e.Group("")
-	auth.Use(echojwt.JWT([]byte(AdminSecretKey)))
+	admin := e.Group("")
+	admin.Use(echojwt.JWT([]byte(AdminSecretKey)))
 
 	e.Use(middleware.NotFoundHandler)
 
@@ -25,8 +26,6 @@ func New() *echo.Echo {
 	e.POST("/admin/login", controllers.AdminLogin)
 
 	//BARANG
-	user := e.Group("")
-	user.Use(echojwt.JWT([]byte(UserSecretKey)))
 	e.GET("/history", controllers.GetAllHistory)
 	e.GET("/history/", controllers.Searching)
 	e.POST("/in/barang", controllers.CreateBarang)
@@ -42,16 +41,9 @@ func New() *echo.Echo {
 	auth.DELETE("/akun/:id", controllers.UserDelete)
 	e.PUT("/akun/:id", controllers.UserUpdate)
 
-	//TIPE GUDANG
-	e.GET("/tipegudang", controllers.GetAllTipeGudang)
-	e.POST("/tipegudang", controllers.CreateTipeGudang)
-	e.PUT("/tipegudang/:id", controllers.UpdateGudang)
-	e.DELETE("/tipegudang/:id", controllers.DeleteTipeGudang)
 
 	e.POST("/rekomendasi", controllers.GetRecommendation)
 
-	auth.GET("/jwttester/admin", controllers.JwtTesterAdmin)
-	user.GET("/jwttester/user", controllers.JwtTesterUser)
 
 	return e
 }
