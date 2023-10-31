@@ -3,6 +3,7 @@ package controllers
 import (
 	"SaveHouse/config"
 	"SaveHouse/models"
+	"SaveHouse/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -19,24 +20,24 @@ func CreateBarangOUT(c echo.Context) error {
 
 	// Create the new Barang in the database
 	if err := config.DB.Create(&BarangKeluar).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create Barang Detail"})
+		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to create Barang"))
 	}
 	Barang.ID = uint(IdBarang)
 	if err := config.DB.Preload("Barangmasuk").Preload("Barangkeluar").Find(&Barang).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve Barang"})
+		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve Barang"))
 	}
 	models.BarangResponseConvert(Barang)
 
 	// Return a JSON response with the created Barang
-	return c.JSON(http.StatusCreated, Barang)
+	return c.JSON(http.StatusCreated, utils.SuccessResponse("Success", Barang))
 }
 
 func GetAllBarangOUT(c echo.Context) error {
 	var barangs []models.BarangOUT
 
 	if err := config.DB.Find(&barangs).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve all barang out"})
+		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve BarangOUT"))
 	}
 
-	return c.JSON(http.StatusOK, barangs)
+	return c.JSON(http.StatusOK, utils.SuccessResponse("Success", barangs))
 }

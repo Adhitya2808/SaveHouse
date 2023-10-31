@@ -12,7 +12,7 @@ import (
 func GetAllHistory(c echo.Context) error {
 	var barang []models.Barang
 	if err := config.DB.Preload("Barangmasuk").Preload("Barangkeluar").Find(&barang).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve History Barang"})
+		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve Barang"))
 	}
 	var responselist []models.HistoryResponse
 	for _, barang := range barang {
@@ -33,11 +33,11 @@ func Searching(c echo.Context) error {
 	offset := (pageInt - 1) * limitInt
 
 	if err := config.DB.Preload("Barangmasuk").Preload("Barangkeluar").Where("barang_name LIKE ?", "%"+search+"%").Offset(offset).Limit(limitInt).Find(&barang).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve Barang"})
+		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve Barang"))
 	}
 
 	if search == "" {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Failed to retrieve Barang"})
+		return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid Search"))
 	}
 
 	var responselist []models.HistoryResponse
