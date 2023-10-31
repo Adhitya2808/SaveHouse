@@ -1,15 +1,11 @@
 package config
 
 import (
-	"app/models"
+	"SaveHouse/models"
 	"fmt"
-	"os"
-
-	"path/filepath"
-
-	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"os"
 )
 
 var DB *gorm.DB

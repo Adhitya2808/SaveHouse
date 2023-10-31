@@ -4,9 +4,7 @@ import (
 	"context"
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"log"
 	"os"
 )
 

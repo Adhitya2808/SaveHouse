@@ -1,8 +1,8 @@
 package req
 
 import (
-	"app/models"
-	"app/models/web"
+	"SaveHouse/models"
+	"SaveHouse/models/web"
 )
 
 func PassBody(users web.UserRequest) *models.User {

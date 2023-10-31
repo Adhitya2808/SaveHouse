@@ -1,6 +1,6 @@
 package web
 
-import "app/models"
+import "SaveHouse/models"
 
 type UserRequest struct {
 	Name     string      `json:"name" form:"name"`

@@ -1,6 +1,6 @@
 package utils
 
-import "app/models"
+import "SaveHouse/models"
 
 func AllBarangsResponse(barangResponse models.Barang) models.BarangResponse {
 	return models.BarangResponse{

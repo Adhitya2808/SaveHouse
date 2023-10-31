@@ -1,8 +1,8 @@
 package main
 
 import (
-	"app/config"
-	"app/routes"
+	"SaveHouse/config"
+	"SaveHouse/routes"
 )
 
 func main() {

@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"app/controllers"
-	"app/middleware"
+	"SaveHouse/controllers"
+	"SaveHouse/middleware"
 	"os"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
