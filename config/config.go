@@ -43,5 +43,6 @@ func ConnectDB() {
 }
 
 func InitMigrate() {
-	DB.AutoMigrate(&models.User{}, &models.Barang{}, &models.BarangIN{}, &models.BarangOUT{}, &models.TipeGudang{})
+	
+	DB.AutoMigrate(&models.User{}, &models.Barang{}, &models.BarangIN{}, &models.BarangOUT{})
 }

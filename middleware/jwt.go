@@ -14,31 +14,17 @@ import (
 
 
 type JwtCustomClaims struct {
-	ID      uint   `json:"id"`
-	Userame string `json:"username"`
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 	jwt.RegisteredClaims
 }
-
-func CreateTokenUser(userId int, username string) string {
-	var payloadParser JwtCustomClaims
-	UserSecretKey := os.Getenv("USER_SECRET")
-
-	payloadParser.ID = uint(userId)
-	payloadParser.Userame = username
-	payloadParser.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Minute * 60))
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payloadParser)
-	t, _ := token.SignedString([]byte(UserSecretKey))
-	return t
-}
-
 
 func CreateTokenAdmin(userId int, name string) string {
 	var payloadParser JwtCustomClaims
 	AdminSecretKey := os.Getenv("ADMIN_SECRET")
 
 	payloadParser.ID = uint(userId)
-	payloadParser.Userame = username
+	payloadParser.Name = name
 	payloadParser.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Minute * 60))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payloadParser)

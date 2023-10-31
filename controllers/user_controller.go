@@ -17,7 +17,6 @@ import (
 )
 
 func UserbyID(c echo.Context) error {
-
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid User ID"))
@@ -64,6 +63,14 @@ func UserLogin(c echo.Context) error {
     if err := config.DB.Where("username = ? AND role = user", loginRequest.Username).First(&user).Error; err != nil{
         return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
     }
+
+	if err := middleware.ComparePassword(user.Password, loginRequest.Password); err != nil {
+		return c.JSON(http.StatusUnauthorized, utils.ErrorResponse("Invalid login credential"))
+	}
+	response := web.UserLoginResponse{
+		Username: user.Username,
+		Role:     string(user.Role),
+		Name:     user.Name,
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("Login User Successful", response))
 }

@@ -4,8 +4,10 @@ import (
 	"SaveHouse/config"
 	"SaveHouse/models"
 	"SaveHouse/service"
+	"SaveHouse/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 func CreateBarang(c echo.Context) error {
@@ -46,7 +48,7 @@ func GetBarangByID(c echo.Context) error {
 	}
 	var responselist []models.BarangResponse
 	for _, Barang := range barang {
-		response := service.AllBarangsResponse(Barang)
+		response := utils.AllBarangsResponse(Barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)
@@ -54,19 +56,33 @@ func GetBarangByID(c echo.Context) error {
 
 func UpdateBarang(c echo.Context) error {
 
+nuser	var updatedBarang models.Barang
+	if err := c.Bind(&updatedBarang); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Cannot bind Barang"})
+	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid ID"})
-	}
-	var barang models.Barang
-	if err := c.Bind(&barang); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Cannot bind BarangID"})
-	}
-
-	var existingBarang models.Barang
-	result := config.DB.First(&existingBarang, id)
-	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve BarangID"})
+	}
+	existingbarang := models.Barang{}
+	err = config.DB.First(&existingbarang, id).Error
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve BarangID"})
+	}
+	fileheader := "photo"
+	existingbarang.Photo = service.CloudinaryUpload(c, fileheader)
+	updatedBarang.Photo = service.CloudinaryUpload(c, fileheader)
+
+	existingbarang.Barang_Name = updatedBarang.Barang_Name
+	existingbarang.TipeGudang = updatedBarang.TipeGudang
+	existingbarang.Photo = updatedBarang.Photo
+	existingbarang.Quantity = updatedBarang.Quantity
+	existingbarang.Category = updatedBarang.Category
+	existingbarang.Description = updatedBarang.Description
+
+	err = config.DB.Save(&existingbarang).Error
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update Barang"})
 	}
 	existingBarang.Barang_Name = barang.Barang_Name
 	existingBarang.TipeGudang = barang.TipeGudang
@@ -76,9 +92,7 @@ func UpdateBarang(c echo.Context) error {
 	existingBarang.Quantity = barang.Quantity
 	config.DB.Model(&existingBarang).Updates(barang)
 
-	response := utils.AllBarangsResponse(existingBarang)
-
-	return c.JSON(http.StatusOK, utils.SuccessResponse("Barang data successfully updated", response))
+	return c.JSON(http.StatusOK, existingbarang)
 
 }
 

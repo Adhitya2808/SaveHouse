@@ -11,9 +11,9 @@ import (
 )
 
 func CloudinaryUpload(c echo.Context, fileheader string) string {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return "gagal mengakses .env"
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("failed to access file .env")
 	}
 
 
