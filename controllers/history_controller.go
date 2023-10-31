@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"SaveHouse/config"
-	"SaveHouse/models"
-	"SaveHouse/service"
+	"app/config"
+	"app/models"
+	"app/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -16,7 +16,7 @@ func GetAllHistory(c echo.Context) error {
 	}
 	var responselist []models.HistoryResponse
 	for _, barang := range barang {
-		response := service.AllHistoryResponse(barang)
+		response := utils.AllHistoryResponse(barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)
@@ -42,7 +42,7 @@ func Searching(c echo.Context) error {
 
 	var responselist []models.HistoryResponse
 	for _, Barang := range barang {
-		response := service.AllHistoryResponse(Barang)
+		response := utils.AllHistoryResponse(Barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)

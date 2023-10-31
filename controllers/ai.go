@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"SaveHouse/models"
+	"app/models"
 	"context"
 	"encoding/json"
 	"fmt"

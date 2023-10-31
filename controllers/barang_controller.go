@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"SaveHouse/config"
-	"SaveHouse/models"
-	"SaveHouse/service"
+	"app/config"
+	"app/models"
+	"app/service"
+	"app/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
@@ -47,7 +48,7 @@ func GetBarangByID(c echo.Context) error {
 	}
 	var responselist []models.BarangResponse
 	for _, Barang := range barang {
-		response := service.AllBarangsResponse(Barang)
+		response := utils.AllBarangsResponse(Barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)
@@ -67,6 +68,10 @@ func UpdateBarang(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve BarangID"})
 	}
+	fileheader := "photo"
+	existingbarang.Photo = service.CloudinaryUpload(c, fileheader)
+	updatedBarang.Photo = service.CloudinaryUpload(c, fileheader)
+
 	existingbarang.Barang_Name = updatedBarang.Barang_Name
 	existingbarang.TipeGudang = updatedBarang.TipeGudang
 	existingbarang.Photo = updatedBarang.Photo
