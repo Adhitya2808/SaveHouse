@@ -1,8 +1,8 @@
 package res
 
 import (
-	"SaveHouse/models"
-	"SaveHouse/models/web"
+	"app/models"
+	"app/models/web"
 )
 
 func ConvertIndex(users []models.User) []web.UserResponse {
