@@ -35,7 +35,7 @@ func New() *echo.Echo {
 	//ADMIN
 	admin.GET("/akun", controllers.AllUser)
 	admin.GET("/akun/", controllers.UserbyID)
-	e.POST("/akun", controllers.Store)
+	admin.POST("/akun", controllers.Store)
 	admin.DELETE("/akun/:id", controllers.UserDelete)
 	e.PUT("/akun/:id", controllers.UserUpdate)
 
