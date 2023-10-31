@@ -30,24 +30,28 @@ func AllUser(c echo.Context) error {
 }
 
 func UserUpdate(c echo.Context) error {
+	var updateuser models.User
+	if err := c.Bind(&updateuser); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "failed tp retrieve userid"})
+	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid ID"))
 	}
 
-	var updatedUser models.User
-
-	if err := c.Bind(&updatedUser); err != nil {
-		return c.JSON(http.StatusBadRequest, utils.ErrorResponse("Invalid request body"))
+	existingUser := models.User{}
+	err = config.DB.First(&existingUser, id).Error
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "failed tp retrieve userid"})
 	}
+	existingUser.Name = updateuser.Name
+	existingUser.Username = updateuser.Username
+	existingUser.Password = middleware.HashPassword(updateuser.Password)
 
-	var existingUser models.User
-	result := config.DB.First(&existingUser, id)
-	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve user"))
+	err = config.DB.Save(&existingUser).Error
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to update user"})
 	}
-
-	config.DB.Model(&existingUser).Updates(updatedUser)
 
 	response := res.ConvertGeneral(&existingUser)
 
