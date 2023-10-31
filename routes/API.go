@@ -9,7 +9,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+
 func New() *echo.Echo {
+
 	e := echo.New()
 
 	AdminSecretKey := os.Getenv("ADMIN_SECRET")
@@ -38,6 +40,7 @@ func New() *echo.Echo {
 	e.POST("/akun", controllers.Store)
 	admin.DELETE("/akun/:id", controllers.UserDelete)
 	e.PUT("/akun/:id", controllers.UserUpdate)
+
 
 	e.POST("/rekomendasi", controllers.GetRecommendation)
 
