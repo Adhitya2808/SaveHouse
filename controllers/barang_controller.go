@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"SaveHouse/config"
-	"SaveHouse/models"
-	"SaveHouse/service"
-	"SaveHouse/utils"
+	"app/config"
+	"app/models"
+	"app/service"
+	"app/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
