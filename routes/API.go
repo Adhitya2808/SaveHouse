@@ -9,9 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-
 func New() *echo.Echo {
-
 	e := echo.New()
 
 	AdminSecretKey := os.Getenv("ADMIN_SECRET")
@@ -23,7 +21,7 @@ func New() *echo.Echo {
 
 	//LOGIN USER DAN ADMIN
 	e.POST("/login", controllers.UserLogin)
-	e.POST("/admin/login", controllers.AdminLogin)
+	e.POST("/login/admin", controllers.AdminLogin)
 
 	//BARANG
 	e.GET("/history", controllers.GetAllHistory)
@@ -35,15 +33,13 @@ func New() *echo.Echo {
 	e.GET("/barang", controllers.GetAllBarang)
 
 	//ADMIN
-	e.GET("/akun", controllers.AllUser)
-	e.GET("/akun/", controllers.UserbyID)
-	e.POST("/akun", controllers.UserRegister)
-	auth.DELETE("/akun/:id", controllers.UserDelete)
+	admin.GET("/akun", controllers.AllUser)
+	admin.GET("/akun/", controllers.UserbyID)
+	e.POST("/akun", controllers.Store)
+	admin.DELETE("/akun/:id", controllers.UserDelete)
 	e.PUT("/akun/:id", controllers.UserUpdate)
 
-
 	e.POST("/rekomendasi", controllers.GetRecommendation)
-
 
 	return e
 }

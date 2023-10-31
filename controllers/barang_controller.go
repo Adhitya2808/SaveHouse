@@ -4,8 +4,10 @@ import (
 	"SaveHouse/config"
 	"SaveHouse/models"
 	"SaveHouse/service"
+	"SaveHouse/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 func CreateBarang(c echo.Context) error {
@@ -46,39 +48,43 @@ func GetBarangByID(c echo.Context) error {
 	}
 	var responselist []models.BarangResponse
 	for _, Barang := range barang {
-		response := service.AllBarangsResponse(Barang)
+		response := utils.AllBarangsResponse(Barang)
 		responselist = append(responselist, response)
 	}
 	return c.JSON(http.StatusOK, responselist)
 }
 
 func UpdateBarang(c echo.Context) error {
-
+	var updatedBarang models.Barang
+	if err := c.Bind(&updatedBarang); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Cannot bind Barang"})
+	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid ID"})
-	}
-	var barang models.Barang
-	if err := c.Bind(&barang); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Cannot bind BarangID"})
-	}
-
-	var existingBarang models.Barang
-	result := config.DB.First(&existingBarang, id)
-	if result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve BarangID"})
 	}
-	existingBarang.Barang_Name = barang.Barang_Name
-	existingBarang.TipeGudang = barang.TipeGudang
-	existingBarang.Category = barang.Category
-	existingBarang.Description = barang.Description
-	existingBarang.Photo = barang.Photo
-	existingBarang.Quantity = barang.Quantity
-	config.DB.Model(&existingBarang).Updates(barang)
+	existingbarang := models.Barang{}
+	err = config.DB.First(&existingbarang, id).Error
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve BarangID"})
+	}
+	fileheader := "photo"
+	existingbarang.Photo = service.CloudinaryUpload(c, fileheader)
+	updatedBarang.Photo = service.CloudinaryUpload(c, fileheader)
 
-	response := utils.AllBarangsResponse(existingBarang)
+	existingbarang.Barang_Name = updatedBarang.Barang_Name
+	existingbarang.TipeGudang = updatedBarang.TipeGudang
+	existingbarang.Photo = updatedBarang.Photo
+	existingbarang.Quantity = updatedBarang.Quantity
+	existingbarang.Category = updatedBarang.Category
+	existingbarang.Description = updatedBarang.Description
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("Barang data successfully updated", response))
+	err = config.DB.Save(&existingbarang).Error
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update Barang"})
+	}
+
+	return c.JSON(http.StatusOK, existingbarang)
 
 }
 
@@ -96,7 +102,6 @@ func DeleteBarang(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]string{"message": "Barang_IN successfully deleted"})
 }
-
 
 func GetAllBarang(c echo.Context) error {
 	var barangs []models.Barang

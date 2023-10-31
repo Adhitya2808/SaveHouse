@@ -7,11 +7,8 @@
 - DB : Maria DB (phpmyadmin pada GCP)
 - Deployment : Google Cloud Platform, Github Action
 - Code Structure : MVC
-- Authentication : JWT (admin)
+- Authentication : JWT (admin, user)
 - Other Tools / Libraries : cloudinary (foto)
 
 ## ERD
 Link : [Entity Relationship Diagram SaveHouse](https://app.eraser.io/workspace/UnifEQoVqpKeMtyo2Pmw?origin=share)
-
-## API SPEC and Test Response
-Link : [API Spec WareHouse](https://documenter.getpostman.com/view/29066574/2s9YXb8QdU)

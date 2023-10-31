@@ -9,10 +9,13 @@ type UserResponse struct {
 
 type AdminLoginResponse struct {
 	Username string `json:"username"`
-	Name     string `json:"name"`
 	Token    string `json:"token"`
+	Role     string `json:"role"`
+	Name     string `json:"name"`
 }
+
 type UserLoginResponse struct {
 	Username string `json:"username"`
+	Role     string `json:"role"`
 	Name     string `json:"name"`
 }
