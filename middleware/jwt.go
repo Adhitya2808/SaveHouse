@@ -11,8 +11,6 @@ import (
 	"time"
 )
 
-
-
 type JwtCustomClaims struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`

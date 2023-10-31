@@ -55,8 +55,7 @@ func GetBarangByID(c echo.Context) error {
 }
 
 func UpdateBarang(c echo.Context) error {
-
-nuser	var updatedBarang models.Barang
+	var updatedBarang models.Barang
 	if err := c.Bind(&updatedBarang); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Cannot bind Barang"})
 	}
@@ -84,13 +83,6 @@ nuser	var updatedBarang models.Barang
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update Barang"})
 	}
-	existingBarang.Barang_Name = barang.Barang_Name
-	existingBarang.TipeGudang = barang.TipeGudang
-	existingBarang.Category = barang.Category
-	existingBarang.Description = barang.Description
-	existingBarang.Photo = barang.Photo
-	existingBarang.Quantity = barang.Quantity
-	config.DB.Model(&existingBarang).Updates(barang)
 
 	return c.JSON(http.StatusOK, existingbarang)
 
@@ -110,7 +102,6 @@ func DeleteBarang(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]string{"message": "Barang_IN successfully deleted"})
 }
-
 
 func GetAllBarang(c echo.Context) error {
 	var barangs []models.Barang
