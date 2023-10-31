@@ -1,7 +1,7 @@
 package config
 
 import (
-	"SaveHouse/models"
+	"app/models"
 	"fmt"
 	"os"
 
