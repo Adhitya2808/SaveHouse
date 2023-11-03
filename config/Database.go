@@ -10,6 +10,16 @@ import (
 
 var DB *gorm.DB
 
+type Config struct {
+	dbUser        string
+	dbPass        string
+	dbHost        string
+	dbPort        string
+	dbName        string
+	secret        string
+	cloudinaryUrl string
+}
+
 func ConnectDB() {
 
 	dbUser := os.Getenv("DB_USER")
@@ -34,5 +44,6 @@ func ConnectDB() {
 }
 
 func InitMigrate() {
+
 	DB.AutoMigrate(&models.User{}, &models.Barang{}, &models.BarangIN{}, &models.BarangOUT{})
 }

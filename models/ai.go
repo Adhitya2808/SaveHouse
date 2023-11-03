@@ -1,8 +1,7 @@
 package models
 
 type GudangRequest struct {
-	NamaBarang string `json:"nama_barang" form:"nama_barang"`
-	Quantity   string `json:"quantity" form:"quantity"`
+	Text string `json:"text" form:"text"`
 }
 
 type AIResponse struct {

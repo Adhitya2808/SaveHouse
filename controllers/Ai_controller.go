@@ -39,7 +39,7 @@ func GetRecommendation(c echo.Context) error {
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: fmt.Sprintf("Rekomendasi Tipe Gudang untuk barang %s dengan banyak barang  %s .", reqData.NamaBarang, reqData.Quantity),
+					Content: fmt.Sprintf("%s ", reqData.Text),
 				},
 			},
 		},

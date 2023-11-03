@@ -15,5 +15,5 @@ func GetAllBarangIN(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve BarangIN"))
 	}
 
-	return c.JSON(http.StatusOK, barangs)
+	return c.JSON(http.StatusOK, utils.SuccessResponse("BarangIN data successfully retrieved", barangs))
 }

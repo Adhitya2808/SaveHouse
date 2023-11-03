@@ -91,11 +91,10 @@ func UpdateBarang(c echo.Context) error {
 func DeleteBarang(c echo.Context) error {
 	id := c.Param("id")
 
-	var barang models.BarangIN
+	var barang models.Barang
 	if err := config.DB.First(&barang, id).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to retrieve Barang"))
 	}
-
 	if err := config.DB.Delete(&barang).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, utils.ErrorResponse("Failed to delete Barang"))
 	}

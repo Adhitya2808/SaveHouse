@@ -19,7 +19,7 @@ func GetAllHistory(c echo.Context) error {
 		response := utils.AllHistoryResponse(barang)
 		responselist = append(responselist, response)
 	}
-	return c.JSON(http.StatusOK, responselist)
+	return c.JSON(http.StatusOK, utils.SuccessResponse("Success", responselist))
 }
 
 func Searching(c echo.Context) error {
@@ -45,6 +45,6 @@ func Searching(c echo.Context) error {
 		response := utils.AllHistoryResponse(Barang)
 		responselist = append(responselist, response)
 	}
-	return c.JSON(http.StatusOK, responselist)
+	return c.JSON(http.StatusOK, utils.SuccessResponse("Success", responselist))
 
 }

@@ -5,16 +5,9 @@ import (
 	"time"
 )
 
-type TipeGudang struct {
-	ID          uint   `json:"id_gudang" form:"id_gudang"`
-	Nama_Gudang string `json:"nama_gudang" form:"nama_gudang"`
-	Alamat      string `json:"alamat" form:"alamat"`
-	Capacity    int    `json:"capacity" form:"capacity"`
-}
-
 type Barang struct {
 	gorm.Model
-	Barang_Name  string    `json:"name_of_goods" form:"nama_barang"`
+	Barang_Name  string    `json:"nama_barang" form:"nama_barang"`
 	Category     string    `json:"category" form:"category"`
 	Description  string    `json:"description" form:"description"`
 	TipeGudang   string    `json:"tipe_gudang" form:"tipe_gudang"`
@@ -36,7 +29,7 @@ type BarangIN struct {
 
 type BarangResponse struct {
 	Trx_id      uint   `json:"trx_id"`
-	Barang_Name string `json:"name_of_goods"`
+	Barang_Name string `json:"nama_barang"`
 	Category    string `json:"category"`
 	TipeGudang  string `json:"tipe_gudang"`
 	Description string `json:"description"`
@@ -66,7 +59,7 @@ func BarangResponseConvert(barang Barang) BarangResponse {
 
 type HistoryResponse struct {
 	Trx_id      uint   `json:"trx_id"`
-	Barang_Name string `json:"name_of_goods"`
+	Barang_Name string `json:"nama_barang"`
 	Category    string `json:"category"`
 	Description string `json:"description"`
 	TipeGudang  string `json:"tipe_gudang"`
